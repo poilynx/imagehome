@@ -1,0 +1,9 @@
+#!/bin/sh
+
+IFS="
+"
+
+cd /home/wwwroot/default/nis
+#sudo chown -hR www-data:imgoper data
+sudo chown -hR root:imgoper data
+echo "for f in \"\$@\"; do [ -d \"\$f\" ] && chmod 775 \"\$f\"; [ -f \"\$f\" ] && chmod 664 \"\$f\"; done" | sudo sh /dev/stdin `find data`

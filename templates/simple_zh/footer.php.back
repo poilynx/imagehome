@@ -1,0 +1,11 @@
+</p>
+<p>
+About <a href="<?php echo $PAGE['about_url'] ?>">Image Home</a><br/ >
+<a href="<?php echo $CONFIG['www_root_r'].'/?action=guestbook'?>">Guest book</a><br />
+Copyright © NSS 2016. All Rights Resered(<a href="http://192.168.102.13">NSS</a>)<br />
+</p>
+<!--<pre>
+<?php //var_dump($PAGE);?>
+</pre>-->
+</body>
+</html>

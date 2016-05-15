@@ -1,0 +1,37 @@
+#! /usr/bin/php5
+<?php
+umask(02);
+//require_once('../includes/config.php');
+require_once('../includes/image_storage.php');
+$path = '';
+function ldir($path,$depth) {
+	if(storage_path_end($path)) {
+		$list = storage_list($path,false);
+		$info = storage_files_info($path);
+		foreach($list as $item) {
+			echo str_repeat('    ',$depth)."[..]".$item;
+			if(!isset($info[$item]['md5'])) {
+				$dirpath = storage_extend_path($path);
+				chmod($dirpath, 0775);
+				$fullpath = $dirpath . '/'.$item;
+				chmod($fullpath, 0664);
+				$md5 = md5_file($fullpath);
+				storage_set_file_info($path.'/'.$item,'md5',$md5);
+			}
+			if(!isset($info[$item]['comment'])) {
+				storage_set_file_info($path.'/'.$item,'comment','');
+			}
+			echo "\r".str_repeat('    ',$depth)."[OK]".$item."\n";
+		}
+	}else{
+		$list = storage_list($path,false);
+		is_array($list) or $list = array();
+		foreach($list as $item) {
+			echo str_repeat('    ',$depth)."$item/\n";
+			ldir($path.'/'.$item,$depth+1);
+		}
+	}
+}
+ldir($path,0);
+echo "All work complated.\n";
+?>
