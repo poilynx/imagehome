@@ -6,7 +6,7 @@
  * @return void
  */
 function download($path,$file) {
-	flush();
+	//flush();
 	$real = $path.'/'.$file;
 	if(!file_exists($real)) {
 		return false;
@@ -16,7 +16,7 @@ function download($path,$file) {
 	$size2 = $size-1;
 	$range = 0;
 	if(isset($_SERVER['HTTP_RANGE'])) {
-		#header('HTTP /1.1 206 Partial Content');
+		//header('HTTP /1.1 206 Partial Content');
 		$range = str_replace('=','-',$_SERVER['HTTP_RANGE']);
 		$range = explode('-',$range);
 		$range = trim($range[1]);
@@ -33,14 +33,7 @@ function download($path,$file) {
 	header("Pragma: public");
 	//解决在IE中下载时中文乱码问题
 	$ua = $_SERVER['HTTP_USER_AGENT'];
-	/*
-	   if(preg_match('/MSIE/',$ua)) {
-	   $ie_filename = str_replace('+','%20',urlencode($file));
-	   header('Content-Dispositon:attachment; filename='.$ie_filename);
-	   } else {
-	   header('Content-Dispositon:attachment; filename='.$file);
-	   }
-	 */
+
 	$filename = $file; 
 	$encoded_filename = urlencode($filename); 
 	$encoded_filename = str_replace("+", "%20", $encoded_filename); 
@@ -53,7 +46,6 @@ function download($path,$file) {
 	} else { 
 		header('Content-Disposition: attachment; filename="' . $filename . '"'); 
 	} 
-	
 	
 	fseek($fp,$range);
 	set_time_limit(0);

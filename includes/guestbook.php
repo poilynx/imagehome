@@ -142,7 +142,7 @@ function guestbook_list($start,$length) {
 	}*/
 	for($i = $begin; $begin <= $end ? $i <= $end : $i >= $end ; $begin <= $end ? $i++ : $i--) {
 		fseek($fmsg,500 * $i);
-		$message = fread($fmsg,500);
+		$message = rtrim(fread($fmsg,500));
 		$message = json_decode($message);
 		$message = object2array($message);
 		if(!$message)
