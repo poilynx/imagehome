@@ -1,53 +1,37 @@
 #! /usr/bin/php5
 <?php
-$nis_root = dirname(__DIR__);
 umask(02);
-require_once($nis_root . '/includes/image_storage.php');
+//require_once('../includes/config.php');
+require_once('../includes/image_storage.php');
 $path = '';
-function ldir($path,$depth,$check) {
+function ldir($path,$depth) {
 	if(storage_path_end($path)) {
 		$list = storage_list($path,false);
 		$info = storage_files_info($path);
-		$dirpath = storage_extend_path($path);
-		//chmod($dirpath, 0775);
 		foreach($list as $item) {
-			echo str_repeat('    ',$depth)."[....] ".$item;
-			if($check) {
-				if(!isset($info[$item]['md5'])) {
-					echo "\r".str_repeat('    ',$depth)."[FAIL]\n";
-					continue;
-				}
+			echo str_repeat('    ',$depth)."[..]".$item;
+			if(!isset($info[$item]['md5'])) {
+				$dirpath = storage_extend_path($path);
+				chmod($dirpath, 0775);
 				$fullpath = $dirpath . '/'.$item;
+				chmod($fullpath, 0664);
 				$md5 = md5_file($fullpath);
-				echo "\r".str_repeat('    ',$depth) .
-					"[" . ($info[$item]['md5'] == $md5 ? " OK " : "FAIL") . "]\n";
-			} else {
-				if(!isset($info[$item]['comment'])) {
-					storage_set_file_info($path.'/'.$item,'comment','');
-				}
-				if(isset($info[$item]['md5'])) {
-					//echo "\r".str_repeat('    ',$depth)."[Skip]".$item."\n";
-					echo "\r".str_repeat('    ',$depth)."[Skip]\n";
-				} else {
-					$fullpath = $dirpath . '/'.$item;
-					chmod($fullpath, 0664);
-					chown($fullpath, 'root');
-					chgrp($fullpath, 'imgoper');
-					$md5 = md5_file($fullpath);
-					storage_set_file_info($path.'/'.$item,'md5',$md5);
-					echo "\r".str_repeat('    ',$depth)."[ OK ]\n";
-				}
+				storage_set_file_info($path.'/'.$item,'md5',$md5);
 			}
+			if(!isset($info[$item]['comment'])) {
+				storage_set_file_info($path.'/'.$item,'comment','');
+			}
+			echo "\r".str_repeat('    ',$depth)."[OK]".$item."\n";
 		}
 	}else{
 		$list = storage_list($path,false);
 		is_array($list) or $list = array();
 		foreach($list as $item) {
 			echo str_repeat('    ',$depth)."$item/\n";
-			ldir($path.'/'.$item, $depth+1, $check);
+			ldir($path.'/'.$item,$depth+1);
 		}
 	}
 }
-ldir($path, 0, $argc > 1 && $argv[1] == "--check");
+ldir($path,0);
 echo "All work complated.\n";
 ?>
