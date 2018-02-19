@@ -4,3 +4,5 @@
 原生PHP MVC应用，无框架，无数据库
 
 前端页面只有HTML，无样式表无JavaScript
+
+该源代码在GNU GPL v2协议下发布
